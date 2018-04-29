@@ -1,0 +1,162 @@
+#%RAML 1.0
+version: v2
+title: Accounts API
+
+types: 
+  account : !include Account.raml
+  AccountNOID: !include AccountNOID.raml
+  
+/accounts:
+  get:
+    description: retrieves accounts 
+    headers: 
+      Requester-ID:
+        description: id of the person requetsing the account details.
+        required: true
+    queryParameters: 
+      type:
+        required: true
+        enum: 
+        - Personal
+        - Business
+      name:
+       required: false
+       type: string
+      country:
+        required: false
+        type: string
+
+    responses: 
+      200:
+        description: returns an array of accounts json[].
+        body: 
+          application/json:
+            type: account[]
+            example: !include Accountsexample.raml
+      400:
+        body: 
+          application/json:
+            example:
+             message: "bad request"
+  post:
+    description: creates new accounts.
+    headers: 
+      Requester-ID: 
+        description: id of the person requesting to create account
+        required: true
+    body: 
+      application/json:
+        type: AccountNOID[]
+        example: !include  AccountExampleNoID.raml  
+    responses: 
+      200:
+        body: 
+          application/json:
+            example:
+              message: "Account created(but not really)"
+      400:
+        body: 
+          application/json:
+            example: {
+                "message": "bad data"   
+            }
+      201:
+        body: 
+          application/json: 
+            example: {
+                "message": "Accounts uploaded but not really"
+          }
+  /{ID}:
+    get:
+      description: "retreives accounts by ID"
+      headers: 
+        Requester-ID:
+          description: id of the person requetsing the account details.
+          required: true
+      responses: 
+        200:
+          description: returns an account.
+          body: 
+            application/json:
+              type: account
+              example: !include accountIdExample.raml
+        400:
+          body: 
+            application/json:
+              example:
+                message: "Error retrieving accounts for ID"
+    put:
+      description: "Endpoint to replace the account"
+      headers: 
+        Requester-ID:
+          description: id of the person requetsing the account details.
+          required: true
+      body: 
+        application/json:
+          description: "The given expected object should contain all fields for Account"
+          type: AccountNOID
+      responses: 
+        200:
+          body: 
+            application/json:
+              example: {
+                "message":"Account replaced"
+              }
+                
+        400:
+          body: 
+            application/json:
+              example:
+                message: "Error in replacing the account"
+
+  patch:
+    description: "endpoint to modify the account"
+    headers: 
+      Requester-ID:
+        description: id of the person requetsing the account details.
+        required: true
+    body: 
+      application/json:
+        description: "The given expected object can contain one field or all fields for Account that need to be modified"
+        type: AccountNOID
+    responses: 
+      200:
+        body: 
+          application/json:
+            example: {
+              "message": "Account modified"
+            }
+        
+      400:
+        body: 
+          application/json:
+            example: {
+                "message": "Error replacing accounts" 
+            }
+  delete:
+    description: "endpoint to modify the account"
+    headers: 
+      Requester-ID:
+        description: id of the person requetsing the account details.
+        required: true
+    responses: 
+      200:
+        body: 
+          application/json:
+            example: {
+              "message": "Account deleted"
+            }
+        
+      400:
+        body: 
+          application/json:
+            example: {
+                "message": "Error deleting accounts" 
+            }    
+          
+        
+
+            
+               
+
+          
